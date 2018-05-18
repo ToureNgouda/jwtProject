@@ -24,7 +24,13 @@ public class JwtAurizationFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
 			throws ServletException, IOException {
-	  String jwt = req.getHeader(SecureConstant.HEADEAR_STRING);       //recuper le token dans la requette 
+		
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Origin, Accept,"
+				+ "X-Requested-With, Content-Type, Access-Control-Request-Method,"
+				+ "Access-Control-Request-Headers, Authorization");
+	  res.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin, Access-Control-Allow-Credentials, Authorization");
+		String jwt = req.getHeader(SecureConstant.HEADEAR_STRING);       //recuper le token dans la requette 
 	  System.out.println(jwt);
 	  if (jwt==null || !jwt.startsWith(SecureConstant.TOKEN_PREFIX))  //test si le token est  null ou bien si le token ne commence pas par le prefix
 		  {
@@ -33,7 +39,7 @@ public class JwtAurizationFilter extends OncePerRequestFilter{
 	
 	  Claims claims =Jwts.parser()
 			  .setSigningKey(SecureConstant.SECRET) //signer le token
-			  .parseClaimsJws(jwt.replace(SecureConstant.TOKEN_PREFIX, "")) //remplace le prefix par une chaine vide
+			  .parseClaimsJws(jwt.replace(SecureConstant.TOKEN_PREFIX, " ")) //remplace le prefix par une chaine vide
 			  .getBody();  //recupere le token signe
 	  String username = claims.getSubject(); //recupere le username
 	  ArrayList<Map<String, String>> roles=  (ArrayList<Map<String, String>>)
